@@ -1,0 +1,17 @@
+{
+  "name": "gis-slides",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "node scripts/build.mjs",
+    "new": "node scripts/new.mjs",
+    "preview": "node scripts/preview.mjs"
+  },
+  "dependencies": {
+    "@slidev/cli": "^53.0.0",
+    "@slidev/theme-default": "^0.25.0",
+    "leaflet": "^1.9.4",
+    "vue": "^3.5.0"
+  }
+}
