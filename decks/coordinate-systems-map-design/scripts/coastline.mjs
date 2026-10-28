@@ -15,7 +15,7 @@ import { join } from 'node:path'
 const SERVICE = 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Countries_December_2023_Boundaries_UK_BFC/FeatureServer/0/query'
 const COUNTRIES = ['England', 'Scotland', 'Wales']
 // Ruler range and number of rulers measured for the chart
-const R_MAX = 100, R_MIN = 0.02, N = 160
+const R_MAX = 100, R_MIN = 0.01, N = 160
 // Zoom views in km [xmin, ymin, xmax, ymax]: West Highlands (60 km), Arisaig (12 km), Arisaig shore (1.2 km).
 // coast: outline the ruler walks; land: simplification of the filled land (m); dp: decimals kept
 const ZOOMS = [

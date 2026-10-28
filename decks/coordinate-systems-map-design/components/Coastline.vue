@@ -49,12 +49,12 @@ function lengthAt(r: number) {
   return l0 + (l1 - l0) * Math.log(r0 / r) / Math.log(r0 / r1)
 }
 
-// Ruler range and reference figures
-const R_MAX = 100, R_MIN = 0.02
-const OS_KM = 17820
-const CONVENTIONS = [
-  { r: 55.6, label: 'US general coastline (30′)' },
-  { r: 4.83, label: 'US tidal shoreline (3 mi)' },
+// Ruler range and published coastline lengths (note their scope: UK vs mainland Great Britain)
+const R_MAX = 100, R_MIN = 0.01
+const PUBLISHED = [
+  { km: 12429, label: 'CIA World Factbook (UK): 12,429 km' },
+  { km: 17820, label: 'Ordnance Survey (mainland GB): 17,820 km' },
+  { km: 19717, label: 'World Resources Institute (UK): 19,717 km' },
 ]
 
 const ruler = ref(R_MAX)
@@ -82,7 +82,7 @@ const zoomWalks = computed(() => zooms.map((z) => {
 }))
 
 // Chart: measured length against ruler length (log), long ruler on the left
-const CW = 440, CH = 220, M = { l: 34, r: 8, t: 40, b: 22 }
+const CW = 440, CH = 220, M = { l: 34, r: 8, t: 18, b: 22 }
 const Y_MAX = 20000
 const span = Math.log(R_MAX / R_MIN)
 const cx = (r: number) => M.l + Math.log(R_MAX / r) / span * (CW - M.l - M.r)
@@ -154,17 +154,14 @@ function drag(e: PointerEvent) {
             <line :x1="M.l" :x2="CW - M.r" :y1="cy(y)" :y2="cy(y)" class="grid" />
             <text :x="M.l - 6" :y="cy(y) + 3" text-anchor="end" class="tick">{{ y / 1000 }}k</text>
           </g>
-          <g v-for="(r, i) in [100, 10, 1, 0.1, 0.02]" :key="r">
+          <g v-for="(r, i) in [100, 10, 1, 0.1, 0.01]" :key="r">
             <text :x="cx(r)" :y="CH - 6" :text-anchor="i ? i < 4 ? 'middle' : 'end' : 'start'" class="tick">{{ fmtRuler(r) }}</text>
           </g>
           <line :x1="M.l" :x2="CW - M.r" :y1="cy(0)" :y2="cy(0)" class="axis" />
 
-          <line :x1="M.l" :x2="CW - M.r" :y1="cy(OS_KM)" :y2="cy(OS_KM)" class="ref" />
-          <text :x="M.l + 4" :y="cy(OS_KM) - 5" class="tiny">Ordnance Survey, mainland GB: 17,820 km</text>
-
-          <g v-for="(c, i) in CONVENTIONS" :key="c.r">
-            <line :x1="cx(c.r)" :x2="cx(c.r)" :y1="M.t - 26 + i * 13" :y2="cy(0)" class="conv" />
-            <text :x="cx(c.r) + 4" :y="M.t - 20 + i * 13" class="tiny">{{ c.label }}</text>
+          <g v-for="p in PUBLISHED" :key="p.km">
+            <line :x1="M.l" :x2="CW - M.r" :y1="cy(p.km)" :y2="cy(p.km)" class="ref" />
+            <text :x="M.l + 4" :y="cy(p.km) - 4" class="tiny">{{ p.label }}</text>
           </g>
 
           <path :d="curve" class="curve" />
@@ -293,10 +290,6 @@ figcaption {
 .ref {
   stroke: var(--ink);
   stroke-dasharray: 4 3;
-}
-.conv {
-  stroke: var(--muted);
-  stroke-dasharray: 1.5 2.5;
 }
 .curve {
   fill: none;
