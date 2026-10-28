@@ -233,7 +233,7 @@ credit: 'NASA, Apollo 17, AS17-148-22727. Public domain'
 layout: figure
 image: /world-upside-down.svg
 wide: true
-credit: 'Nicoguaro, derived from World map.svg. CC0, via Wikimedia Commons (curid=41434234)'
+credit: 'Data: Natural Earth'
 ---
 
 <!--

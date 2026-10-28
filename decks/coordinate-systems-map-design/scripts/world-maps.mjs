@@ -7,7 +7,7 @@
 import { readFileSync, writeFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { join } from 'node:path'
-import { geoDistance, geoGraticule10, geoMercator, geoPath } from 'd3-geo'
+import { geoDistance, geoEqualEarth, geoGraticule10, geoMercator, geoPath } from 'd3-geo'
 import { feature, neighbors } from 'topojson-client'
 
 const require = createRequire(import.meta.url)
@@ -80,4 +80,24 @@ ${scaleBar}
 <rect width="${W}" height="${H}" fill="none" stroke="#333" stroke-width="1"/>
 </svg>
 `)
-console.log('Wrote public/mercator-world.svg')
+// South-up world map for the last slide, styled like the antipode map (components/Antipode.vue):
+// Equal Earth, rotated by 180°, in the deck's paper and ink colours
+const PAPER = '#f5f2ea', INK = '#1d2a35'
+const landTopo = JSON.parse(readFileSync(require.resolve('world-atlas/land-50m.json'), 'utf8'))
+const land = feature(landTopo, landTopo.objects.land)
+const sphere = { type: 'Sphere' }
+const SW = 1000, pad = 2
+const south = geoEqualEarth().reflectX(true).reflectY(true).fitWidth(SW - 2 * pad, sphere)
+const [[, sy0], [, sy1]] = geoPath(south).bounds(sphere)
+south.translate([south.translate()[0] + pad, south.translate()[1] - sy0 + pad])
+const SH = Math.ceil(sy1 - sy0 + 2 * pad)
+const spath = geoPath(south).digits(1)
+writeFileSync(join(PUBLIC, 'world-upside-down.svg'), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${SW} ${SH}">
+<path d="${spath(sphere)}" fill="${PAPER}"/>
+<path d="${spath(sphere)}" fill="${INK}" fill-opacity="0.03"/>
+<path d="${spath(geoGraticule10())}" fill="none" stroke="${INK}" stroke-opacity="0.15" stroke-width="0.6"/>
+<path d="${spath(land)}" fill="${INK}" fill-opacity="0.063" stroke="${INK}" stroke-opacity="0.7" stroke-width="0.7" stroke-linejoin="round"/>
+<path d="${spath(sphere)}" fill="none" stroke="${INK}" stroke-opacity="0.5" stroke-width="1"/>
+</svg>
+`)
+console.log('Wrote public/mercator-world.svg and public/world-upside-down.svg')

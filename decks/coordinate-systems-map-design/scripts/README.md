@@ -4,13 +4,15 @@ These scripts rebuild the deck's generated maps and data. Run them from this fol
 
 | Script | Builds | Source data |
 |---|---|---|
-| `node world-maps.mjs` | `public/mercator-world.svg` | Natural Earth 1:110m (`world-atlas` package) |
+| `node world-maps.mjs` | `public/mercator-world.svg`, `public/world-upside-down.svg` | Natural Earth 1:110m and 1:50m (`world-atlas` package) |
 | `node --max-old-space-size=4096 coastline.mjs` | `components/britain.json`, `britain-lengths.json`, `britain-zooms.json` | ONS Countries (Dec 2023) BFC, downloaded on first run |
 | `python ice-screens.py` | `public/ice-screen-out.jpg`, `public/ice-screen-in.jpg` | Original photos in `sources/` |
 
 ## world-maps.mjs
 
 Generates the Mercator map with its planted issues: a single scale bar, a straight route labelled with the great-circle distance, and Antarctica cut off at 60°S. The interactive comparison on the next slide (Mercator, Equal Earth, globe; straight vs shortest route) is drawn live by `components/RouteMap.vue`, using the same colours and data.
+
+It also draws the south-up world map for the last slide: an Equal Earth map rotated by 180°, in the deck's paper and ink colours like the antipode map.
 
 ## coastline.mjs
 
